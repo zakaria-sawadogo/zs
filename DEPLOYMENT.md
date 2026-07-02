@@ -36,18 +36,20 @@ Le workflow `.github/workflows/deploy.yml` construira automatiquement le site et
 Pendant le déploiement public, la route locale `/admin` est désactivée et retirée de l'artefact GitHub Pages. L'admin reste disponible uniquement en local avec :
 
 ```bash
-NEXT_PUBLIC_ENABLE_ADMIN=true npm run dev
+npm run admin
 ```
 
 ## Modifier les données avec l'admin local
 
-L'admin local affiche et modifie les données dans le navigateur. Pour que Git voie les changements, il faut écrire les fichiers JSON du projet :
+L'admin local affiche et modifie les données dans le navigateur. Pour publier automatiquement après enregistrement, utilise le mode admin :
 
 1. Lance le site en local :
 
 ```bash
-NEXT_PUBLIC_ENABLE_ADMIN=true npm run dev
+npm run admin
 ```
+
+Cette commande démarre Next.js et un petit service local privé qui peut faire `git add`, `commit` et `push`.
 
 2. Ouvre `/admin`.
 3. Clique sur `Choisir le dossier`.
@@ -55,18 +57,22 @@ NEXT_PUBLIC_ENABLE_ADMIN=true npm run dev
 5. Modifie une section.
 6. Clique sur `Save local edits`.
 7. Clique sur `Écrire ce fichier` ou `Écrire tout`.
-8. Vérifie avec :
+8. Clique sur `Publier sur GitHub`, ou coche `Publier automatiquement après chaque écriture`.
+
+Le bouton `Publier sur GitHub` exécute automatiquement :
+
+```bash
+git add data public/images
+git commit -m "Update website content ..."
+git push origin main
+```
+
+Si GitHub demande une authentification, configure d'abord ton accès GitHub dans le terminal.
+
+Pour vérifier manuellement :
 
 ```bash
 git status
-```
-
-9. Envoie les changements :
-
-```bash
-git add data
-git commit -m "Update website data"
-git push
 ```
 
 Si ton navigateur ne permet pas `Choisir le dossier`, utilise `Export`, remplace manuellement le fichier correspondant dans `data/`, puis commit et push.

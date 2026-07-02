@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Check, Copy, Download, Eye, FileJson, FolderOpen, Plus, Save, Trash2 } from "lucide-react";
+import { Check, Copy, Download, Eye, FileJson, FolderOpen, Plus, Save, Trash2, UploadCloud } from "lucide-react";
 import { Button } from "@/components/design/button";
 import { Card } from "@/components/design/card";
 import { Container } from "@/components/design/container";
@@ -139,6 +139,8 @@ export function AdminDashboard() {
   const [store, setStore] = useState<Record<string, unknown>>({});
   const [projectDirectory, setProjectDirectory] = useState<FileSystemDirectoryHandleLike | null>(null);
   const [toast, setToast] = useState("");
+  const [autoPublish, setAutoPublish] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const activeSection = sections.find((section) => section.key === activeKey) ?? sections[0];
   const activeData = store[activeKey] ?? getSectionData(activeKey);
@@ -175,6 +177,27 @@ export function AdminDashboard() {
     window.localStorage.setItem("academic-admin-json", JSON.stringify(nextStore));
     setToast(message);
     window.setTimeout(() => setToast(""), 2500);
+  }
+
+  async function publishToGitHub() {
+    const publishUrl = process.env.NEXT_PUBLIC_LOCAL_PUBLISH_URL;
+    if (!publishUrl) {
+      setToast("Lance le site avec `npm run admin` pour publier automatiquement.");
+      return false;
+    }
+
+    setPublishing(true);
+    try {
+      const response = await fetch(publishUrl, { method: "POST" });
+      const result = (await response.json()) as { ok: boolean; message: string };
+      setToast(result.ok ? "Publication GitHub terminée." : `Publication échouée: ${result.message}`);
+      return result.ok;
+    } catch (error) {
+      setToast(`Publication impossible. Lance \`npm run admin\`. ${String(error)}`);
+      return false;
+    } finally {
+      setPublishing(false);
+    }
   }
 
   async function writeJsonFile(key: AdminSection["key"], data: unknown) {
@@ -216,6 +239,7 @@ export function AdminDashboard() {
     if (projectDirectory) {
       await writeJsonFile(activeKey, nextData);
       setToast(`${fileNameFor(activeKey)} modifié dans le dossier data/`);
+      if (autoPublish) await publishToGitHub();
     }
   }
 
@@ -266,7 +290,8 @@ export function AdminDashboard() {
     }
 
     await writeJsonFile(activeKey, store[activeKey] ?? activeData);
-    setToast(`${fileNameFor(activeKey)} modifié dans data/. Tu peux maintenant commit et push.`);
+    setToast(`${fileNameFor(activeKey)} modifié dans data/.`);
+    if (autoPublish) await publishToGitHub();
   }
 
   async function saveAllToProject() {
@@ -277,20 +302,29 @@ export function AdminDashboard() {
 
     const keys = Object.keys(siteData) as DataKey[];
     await Promise.all(keys.map((key) => writeJsonFile(key, store[key] ?? siteData[key])));
-    setToast("Tous les fichiers data/*.json ont été écrits. Tu peux commit et push.");
+    setToast("Tous les fichiers data/*.json ont été écrits.");
+    if (autoPublish) await publishToGitHub();
   }
 
   return (
     <Container className="py-10">
-      <Heading eyebrow="Local Admin" title="Academic website administration" text="Les modifications sont d'abord gardées dans le navigateur. Pour les envoyer sur GitHub, choisis le dossier du projet puis écris les fichiers data/*.json avant le commit." />
+      <Heading eyebrow="Local Admin" title="Academic website administration" text="Lance ce tableau de bord avec `npm run admin`. Après l’écriture dans data/*.json, tu peux publier automatiquement sur GitHub." />
       <Card className="mb-6 border-[var(--brand)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-xl font-bold">Écriture directe dans le projet</h2>
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
               Sélectionne le dossier racine du projet, celui qui contient `app`, `components` et `data`.
-              Après l'écriture, fais `git status`, `git add`, `commit`, puis `push`.
+              Avec `npm run admin`, le bouton de publication fait automatiquement `git add`, `commit` et `push`.
             </p>
+            <label className="mt-4 flex items-center gap-2 text-sm font-semibold text-[var(--muted)]">
+              <input
+                type="checkbox"
+                checked={autoPublish}
+                onChange={(event) => setAutoPublish(event.target.checked)}
+              />
+              Publier automatiquement après chaque écriture
+            </label>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="secondary" onClick={chooseProjectDirectory}>
@@ -301,6 +335,9 @@ export function AdminDashboard() {
             </Button>
             <Button type="button" onClick={saveAllToProject}>
               <Save size={16} /> Écrire tout
+            </Button>
+            <Button type="button" variant="secondary" onClick={publishToGitHub} disabled={publishing}>
+              <UploadCloud size={16} /> {publishing ? "Publication..." : "Publier sur GitHub"}
             </Button>
           </div>
         </div>
@@ -373,6 +410,9 @@ export function AdminDashboard() {
                   <Button type="button" variant="secondary" onClick={() => navigator.clipboard.writeText(JSON.stringify(store[activeKey] ?? activeData, null, 2))}><Copy size={16} /> Copy</Button>
                   <Button type="button" variant="secondary" onClick={saveToDisk}><Download size={16} /> Export</Button>
                   <Button type="button" variant="secondary" onClick={saveCurrentToProject}><Save size={16} /> Write file</Button>
+                  <Button type="button" variant="secondary" onClick={publishToGitHub} disabled={publishing}>
+                    <UploadCloud size={16} /> Push
+                  </Button>
                 </div>
               </div>
               <textarea
