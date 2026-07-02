@@ -93,9 +93,9 @@ export default function HomePage() {
           </div>
           <ol className="paper-list grid gap-5">
             {selectedPublications.map((item) => (
-              <li className="grid grid-cols-[34px_1fr] gap-3" key={item.title}>
+                <li className="grid grid-cols-[34px_1fr] gap-3" key={item.title}>
                 <div>
-                  <Link href={item.pdf} className="academic-link text-base">{item.title}</Link>
+                  <Link href={item.pdf || "/publications"} className="academic-link text-base">{item.title}</Link>
                   <p className="mt-1 text-sm text-[var(--muted)]">{item.authors}</p>
                   <p className="mt-1 text-sm text-[var(--muted)]">
                     <strong className="text-[var(--foreground)]">{item.venue}</strong>, {item.year}. DOI: {item.doi}

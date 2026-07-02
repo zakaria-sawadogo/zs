@@ -53,8 +53,9 @@ export function PublicationExplorer({ publications }: { publications: Publicatio
                 </div>
               </div>
               <div className="flex min-w-40 flex-wrap gap-2 lg:justify-end">
-                <Button href={item.pdf} variant="secondary">PDF</Button>
-                <Button href={item.code || "#"} variant="secondary">Code</Button>
+                {item.pdf ? <Button href={item.pdf} variant="secondary">DOI / PDF</Button> : null}
+                {item.code ? <Button href={item.code} variant="secondary">Code</Button> : null}
+                {item.video ? <Button href={item.video} variant="secondary">Video</Button> : null}
               </div>
             </div>
           </Card>
