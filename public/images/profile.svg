@@ -11,5 +11,5 @@
   <circle cx="360" cy="300" r="132" fill="#f8fafc" opacity=".94"/>
   <path d="M156 760c34-164 130-246 204-246s170 82 204 246" fill="#f8fafc" opacity=".94"/>
   <path d="M156 170h408M156 730h408" stroke="#fbbf24" stroke-width="12" stroke-linecap="round" opacity=".8"/>
-  <text x="360" y="824" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#fff">Dr Zakaria Sawadogo</text>
+  <text x="360" y="824" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#fff">Dr. Zakaria Sawadogo</text>
 </svg>
