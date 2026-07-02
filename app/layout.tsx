@@ -3,6 +3,7 @@ import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { LanguageRuntime } from "@/components/layout/language-runtime";
 import settings from "@/data/settings.json";
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <SiteHeader />
           <main>{children}</main>
           <SiteFooter />
+          <LanguageRuntime />
         </ThemeProvider>
         <script
           type="application/ld+json"

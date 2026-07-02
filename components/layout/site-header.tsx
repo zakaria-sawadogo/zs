@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Container } from "@/components/design/container";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { LanguageToggle } from "@/components/layout/language-toggle";
 import settings from "@/data/settings.json";
 import { isAdminEnabled } from "@/lib/paths";
 
@@ -31,6 +32,7 @@ export function SiteHeader() {
           ) : null}
         </nav>
         <div className="flex items-center gap-2">
+          <LanguageToggle />
           <ThemeToggle />
           <button className="inline-flex size-10 items-center justify-center rounded-md border border-[var(--line)] lg:hidden" onClick={() => setOpen(!open)} aria-label="Toggle navigation">
             {open ? <X size={19} /> : <Menu size={19} />}

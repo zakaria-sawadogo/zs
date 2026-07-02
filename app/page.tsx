@@ -57,7 +57,7 @@ export default function HomePage() {
             {profile.name}
           </h1>
           <p className="mt-3 text-xl font-semibold text-[var(--foreground)]">{profile.headline}</p>
-          <p className="mt-6 max-w-3xl leading-8 text-[var(--muted)]">{profile.bio}</p>
+          <p className="mt-6 max-w-3xl whitespace-pre-line leading-8 text-[var(--muted)]">{profile.bio}</p>
 
           <div className="mt-7 flex flex-wrap gap-3">
             <Button href="/publications" variant="secondary">
