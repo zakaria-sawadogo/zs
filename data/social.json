@@ -1,7 +1,7 @@
 [
-  { "label": "Google Scholar", "url": "https://scholar.google.com/", "icon": "SiGooglescholar" },
-  { "label": "ORCID", "url": "https://orcid.org/", "icon": "SiOrcid" },
+  { "label": "Google Scholar", "url": "https://scholar.google.com/citations?user=D0Ib9WIAAAAJ&hl=fr&oi=ao", "icon": "SiGooglescholar" },
+  { "label": "ORCID", "url": "https://orcid.org/0000-0003-0427-5944", "icon": "SiOrcid" },
   { "label": "GitHub", "url": "https://github.com/", "icon": "Github" },
-  { "label": "LinkedIn", "url": "https://linkedin.com/", "icon": "Linkedin" },
+  { "label": "LinkedIn", "url": "https://www.linkedin.com/in/zakariasawado/", "icon": "Linkedin" },
   { "label": "ResearchGate", "url": "https://researchgate.net/", "icon": "SiResearchgate" }
 ]
