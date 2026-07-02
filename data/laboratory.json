@@ -1,0 +1,9 @@
+{
+  "name": "AI, Cybersecurity & Data Science Laboratory",
+  "mission": "Advance applied research and train engineers capable of building secure, intelligent, and socially useful digital systems.",
+  "vision": "Become a regional reference laboratory for trustworthy AI, cybersecurity, and data-driven innovation.",
+  "axes": ["Trustworthy AI", "Mobile Security", "Privacy Engineering", "Educational Data Science", "Digital Transformation"],
+  "equipment": ["GPU workstation", "Security analysis lab", "Mobile testing devices", "Data visualization room"],
+  "partners": ["École Polytechnique de Ouagadougou", "Public-sector digital services", "Industry innovation partners"],
+  "join": "Students interested in AI, cybersecurity, privacy, or data science are encouraged to contact the lab with a short research statement."
+}

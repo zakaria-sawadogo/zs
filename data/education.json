@@ -1,0 +1,14 @@
+[
+  {
+    "degree": "PhD in Computer Science",
+    "institution": "Research focus: AI and Cybersecurity",
+    "year": "2022",
+    "details": "Dissertation on intelligent methods for security analytics and privacy-aware systems."
+  },
+  {
+    "degree": "MSc in Computer Science",
+    "institution": "Data Science and Software Engineering",
+    "year": "2017",
+    "details": "Advanced training in algorithms, distributed systems, and applied machine learning."
+  }
+]

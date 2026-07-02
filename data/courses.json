@@ -1,0 +1,26 @@
+[
+  {
+    "code": "AI-401",
+    "title": "Artificial Intelligence",
+    "level": "Engineering",
+    "semester": "Fall",
+    "description": "Foundations of intelligent agents, search, learning, and responsible AI applications.",
+    "materials": ["/downloads/ai-401-syllabus.pdf", "/downloads/ai-401-labs.pdf"]
+  },
+  {
+    "code": "SEC-302",
+    "title": "Cybersecurity",
+    "level": "Engineering",
+    "semester": "Spring",
+    "description": "Threat models, network security, secure software, cryptography basics, and incident response.",
+    "materials": ["/downloads/sec-302-syllabus.pdf"]
+  },
+  {
+    "code": "DS-310",
+    "title": "Data Science",
+    "level": "Engineering",
+    "semester": "Fall",
+    "description": "Data wrangling, visualization, supervised learning, and reproducible analytics.",
+    "materials": ["/downloads/ds-310-syllabus.pdf"]
+  }
+]

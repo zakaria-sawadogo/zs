@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="900" viewBox="0 0 720 900" role="img" aria-label="Academic portrait placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#0f766e"/>
+      <stop offset="0.55" stop-color="#1f2937"/>
+      <stop offset="1" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="900" fill="#f7f5ef"/>
+  <rect x="48" y="48" width="624" height="804" rx="28" fill="url(#g)"/>
+  <circle cx="360" cy="300" r="132" fill="#f8fafc" opacity=".94"/>
+  <path d="M156 760c34-164 130-246 204-246s170 82 204 246" fill="#f8fafc" opacity=".94"/>
+  <path d="M156 170h408M156 730h408" stroke="#fbbf24" stroke-width="12" stroke-linecap="round" opacity=".8"/>
+  <text x="360" y="824" text-anchor="middle" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#fff">Dr Zakaria Sawadogo</text>
+</svg>

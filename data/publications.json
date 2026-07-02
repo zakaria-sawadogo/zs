@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Graph-Based Android Malware Classification for Resource-Constrained Environments",
+    "authors": "Z. Sawadogo, A. Ouedraogo, M. Traoré",
+    "venue": "Journal of Cybersecurity Research",
+    "year": 2026,
+    "type": "Journal",
+    "doi": "10.0000/jcr.2026.001",
+    "abstract": "A lightweight graph representation for improving Android malware detection in constrained deployment settings.",
+    "pdf": "/downloads/android-malware-classification.pdf",
+    "bibtex": "@article{sawadogo2026android,title={Graph-Based Android Malware Classification},author={Sawadogo, Zakaria},year={2026}}",
+    "code": "https://github.com/",
+    "video": "",
+    "citations": 12,
+    "tags": ["Android Malware", "Cybersecurity", "Machine Learning"]
+  },
+  {
+    "title": "Privacy-Aware Learning for Digital Public Services",
+    "authors": "Z. Sawadogo, K. Kabore",
+    "venue": "African Conference on AI",
+    "year": 2025,
+    "type": "Conference",
+    "doi": "10.0000/acai.2025.014",
+    "abstract": "A framework for deploying learning systems in public services while preserving data minimization and governance constraints.",
+    "pdf": "/downloads/privacy-aware-learning.pdf",
+    "bibtex": "@inproceedings{sawadogo2025privacy,title={Privacy-Aware Learning for Digital Public Services},author={Sawadogo, Zakaria},year={2025}}",
+    "code": "",
+    "video": "",
+    "citations": 8,
+    "tags": ["Privacy", "AI", "Digital Transformation"]
+  },
+  {
+    "title": "Data-Driven Academic Planning in Emerging Universities",
+    "authors": "Z. Sawadogo",
+    "venue": "International Journal of Educational Data Science",
+    "year": 2024,
+    "type": "Journal",
+    "doi": "10.0000/ijeds.2024.021",
+    "abstract": "A practical model for using institutional data to improve academic planning and student support.",
+    "pdf": "/downloads/academic-planning.pdf",
+    "bibtex": "@article{sawadogo2024planning,title={Data-Driven Academic Planning},author={Sawadogo, Zakaria},year={2024}}",
+    "code": "",
+    "video": "",
+    "citations": 21,
+    "tags": ["Data Science", "Education"]
+  }
+]

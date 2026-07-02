@@ -1,0 +1,9 @@
+{
+  "name": "Dr Zakaria Sawadogo Academic Portfolio",
+  "short_name": "Zakaria Sawadogo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f5ef",
+  "theme_color": "#0f766e",
+  "description": "Academic website for Dr Zakaria Sawadogo."
+}

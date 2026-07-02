@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Awa Kabore",
+    "program": "MSc",
+    "topic": "Privacy-preserving educational analytics",
+    "status": "Current"
+  },
+  {
+    "name": "Issa Ouedraogo",
+    "program": "Engineering",
+    "topic": "Android malware feature extraction",
+    "status": "Current"
+  },
+  {
+    "name": "Mariam Traoré",
+    "program": "MSc",
+    "topic": "Cybersecurity dashboards for public institutions",
+    "status": "Alumni"
+  }
+]

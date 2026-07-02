@@ -1,0 +1,56 @@
+[
+  {
+    "area": "Artificial Intelligence",
+    "slug": "artificial-intelligence",
+    "image": "/images/research-ai.svg",
+    "description": "Learning systems for prediction, decision support, automation, and responsible deployment in African contexts.",
+    "technologies": ["Machine Learning", "Deep Learning", "MLOps", "Responsible AI"],
+    "projects": ["AI Decision Support for Public Services"],
+    "publications": ["Privacy-Aware Learning for Digital Public Services"]
+  },
+  {
+    "area": "Cybersecurity",
+    "slug": "cybersecurity",
+    "image": "/images/research-security.svg",
+    "description": "Threat detection, secure software engineering, security analytics, and resilient digital infrastructures.",
+    "technologies": ["Security Analytics", "Threat Modeling", "SIEM", "Secure Coding"],
+    "projects": ["National Cybersecurity Capacity Toolkit"],
+    "publications": ["Machine Learning for Lightweight Intrusion Detection"]
+  },
+  {
+    "area": "Android Malware",
+    "slug": "android-malware",
+    "image": "/images/research-mobile.svg",
+    "description": "Static and dynamic analysis methods for detecting malicious behavior in mobile applications.",
+    "technologies": ["Android", "Malware Analysis", "Reverse Engineering", "Graph Learning"],
+    "projects": ["Android Malware Intelligence Platform"],
+    "publications": ["Graph-Based Android Malware Classification"]
+  },
+  {
+    "area": "Privacy",
+    "slug": "privacy",
+    "image": "/images/research-privacy.svg",
+    "description": "Privacy-aware data pipelines, governance models, and security controls for sensitive systems.",
+    "technologies": ["Privacy Engineering", "Data Governance", "Federated Learning"],
+    "projects": ["Privacy-First Data Exchange"],
+    "publications": ["Privacy-Aware Learning for Digital Public Services"]
+  },
+  {
+    "area": "Data Science",
+    "slug": "data-science",
+    "image": "/images/research-data.svg",
+    "description": "Applied analytics, forecasting, dashboards, and data platforms for education, health, and administration.",
+    "technologies": ["Python", "Pandas", "Visualization", "Forecasting"],
+    "projects": ["Education Analytics Observatory"],
+    "publications": ["Data-Driven Academic Planning in Emerging Universities"]
+  },
+  {
+    "area": "Digital Transformation",
+    "slug": "digital-transformation",
+    "image": "/images/research-digital.svg",
+    "description": "Digital strategy, service modernization, platform architecture, and institutional capacity building.",
+    "technologies": ["Enterprise Architecture", "Cloud", "Product Strategy"],
+    "projects": ["Digital Campus Platform"],
+    "publications": ["A Framework for Secure Digital Transformation in Higher Education"]
+  }
+]

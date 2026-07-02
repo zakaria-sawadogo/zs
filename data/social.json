@@ -1,0 +1,7 @@
+[
+  { "label": "Google Scholar", "url": "https://scholar.google.com/", "icon": "SiGooglescholar" },
+  { "label": "ORCID", "url": "https://orcid.org/", "icon": "SiOrcid" },
+  { "label": "GitHub", "url": "https://github.com/", "icon": "Github" },
+  { "label": "LinkedIn", "url": "https://linkedin.com/", "icon": "Linkedin" },
+  { "label": "ResearchGate", "url": "https://researchgate.net/", "icon": "SiResearchgate" }
+]

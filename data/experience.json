@@ -1,0 +1,18 @@
+[
+  {
+    "role": "Lecturer & Researcher",
+    "organization": "École Polytechnique de Ouagadougou",
+    "location": "Ouagadougou, Burkina Faso",
+    "start": "2022",
+    "end": "Present",
+    "summary": "Teaching, supervising research, and leading applied work in AI, cybersecurity, data science, and digital transformation."
+  },
+  {
+    "role": "Research Collaborator",
+    "organization": "Applied AI and Security Programs",
+    "location": "Burkina Faso",
+    "start": "2019",
+    "end": "2022",
+    "summary": "Contributed to research projects on secure mobile systems, data-driven decision support, and intelligent detection methods."
+  }
+]
