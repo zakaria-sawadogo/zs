@@ -27,6 +27,9 @@ Dans GitHub :
 2. Va dans `Settings`.
 3. Va dans `Pages`.
 4. Dans `Build and deployment`, choisis `GitHub Actions`.
+5. Sauvegarde, puis relance le workflow dans l'onglet `Actions`.
+
+Si le workflow échoue avec `Creating Pages deployment failed` puis `HttpError: Not Found`, cela veut dire que GitHub Pages n'est pas encore activé pour le dépôt ou que la source n'est pas réglée sur `GitHub Actions`.
 
 Le workflow `.github/workflows/deploy.yml` construira automatiquement le site et publiera le dossier `out`.
 
