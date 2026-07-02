@@ -5,6 +5,7 @@ import { Badge } from "@/components/design/badge";
 import laboratory from "@/data/laboratory.json";
 import gallery from "@/data/gallery.json";
 import Image from "next/image";
+import { withBasePath } from "@/lib/paths";
 
 export const metadata = { title: "Laboratory" };
 
@@ -27,7 +28,7 @@ export default function LaboratoryPage() {
       <div className="mt-8 grid gap-5 md:grid-cols-3">
         {gallery.map((item) => (
           <Card key={item.title}>
-            <Image src={item.image} alt="" width={480} height={320} className="mb-4 aspect-[4/3] w-full rounded-md object-cover" />
+            <Image src={withBasePath(item.image)} alt="" width={480} height={320} className="mb-4 aspect-[4/3] w-full rounded-md object-cover" />
             <h3 className="font-bold">{item.title}</h3>
             <p className="mt-2 text-sm text-[var(--muted)]">{item.caption}</p>
           </Card>

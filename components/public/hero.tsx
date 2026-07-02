@@ -6,6 +6,7 @@ import { Badge } from "@/components/design/badge";
 import { Reveal } from "@/components/public/reveal";
 import { StatCounter } from "@/components/public/stat-counter";
 import profile from "@/data/profile.json";
+import { withBasePath } from "@/lib/paths";
 
 export function Hero() {
   return (
@@ -40,7 +41,7 @@ export function Hero() {
         </Reveal>
         <Reveal delay={0.1}>
           <div className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--panel)] shadow-2xl">
-            <Image src={profile.photo} alt={profile.name} fill priority className="object-cover" />
+            <Image src={withBasePath(profile.photo)} alt={profile.name} fill priority className="object-cover" />
           </div>
         </Reveal>
       </Container>

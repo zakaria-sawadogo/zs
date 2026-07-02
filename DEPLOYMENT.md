@@ -33,6 +33,12 @@ Si le workflow échoue avec `Creating Pages deployment failed` puis `HttpError: 
 
 Le workflow `.github/workflows/deploy.yml` construira automatiquement le site et publiera le dossier `out`.
 
+Pendant le déploiement public, la route locale `/admin` est désactivée et retirée de l'artefact GitHub Pages. L'admin reste disponible uniquement en local avec :
+
+```bash
+NEXT_PUBLIC_ENABLE_ADMIN=true npm run dev
+```
+
 ## 4. URL finale
 
 Si le dépôt s'appelle `zakaria-sawadogo`, le site sera généralement disponible ici :

@@ -4,6 +4,7 @@ import { Heading } from "@/components/design/heading";
 import { Card } from "@/components/design/card";
 import { Badge } from "@/components/design/badge";
 import projects from "@/data/projects.json";
+import { withBasePath } from "@/lib/paths";
 
 export const metadata = { title: "Projects" };
 
@@ -14,7 +15,7 @@ export default function ProjectsPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <Card key={project.title}>
-            <Image src={project.image} alt="" width={640} height={360} className="mb-5 aspect-video w-full rounded-md object-cover" />
+            <Image src={withBasePath(project.image)} alt="" width={640} height={360} className="mb-5 aspect-video w-full rounded-md object-cover" />
             <Badge>{project.status}</Badge>
             <h2 className="mt-4 text-2xl font-bold">{project.title}</h2>
             <p className="mt-3 leading-7 text-[var(--muted)]">{project.description}</p>

@@ -10,6 +10,7 @@ import { Reveal } from "@/components/public/reveal";
 import research from "@/data/research.json";
 import publications from "@/data/publications.json";
 import projects from "@/data/projects.json";
+import { withBasePath } from "@/lib/paths";
 
 export default function HomePage() {
   return (
@@ -21,7 +22,7 @@ export default function HomePage() {
           {research.slice(0, 6).map((item, index) => (
             <Reveal key={item.slug} delay={index * 0.04}>
               <Card className="h-full">
-                <Image src={item.image} alt="" width={520} height={300} className="mb-5 aspect-video w-full rounded-md object-cover" />
+                <Image src={withBasePath(item.image)} alt="" width={520} height={300} className="mb-5 aspect-video w-full rounded-md object-cover" />
                 <h3 className="text-xl font-bold text-[var(--ink)]">{item.area}</h3>
                 <p className="mt-3 leading-7 text-[var(--muted)]">{item.description}</p>
               </Card>

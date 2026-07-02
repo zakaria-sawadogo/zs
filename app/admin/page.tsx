@@ -1,9 +1,16 @@
-import { AdminDashboard } from "@/components/admin/admin-dashboard";
+import { notFound } from "next/navigation";
+import { isAdminEnabled } from "@/lib/paths";
 
 export const metadata = {
   title: "Admin"
 };
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  if (!isAdminEnabled()) {
+    notFound();
+  }
+
+  const { AdminDashboard } = await import("@/components/admin/admin-dashboard");
+
   return <AdminDashboard />;
 }

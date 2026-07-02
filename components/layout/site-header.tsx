@@ -6,9 +6,11 @@ import { useState } from "react";
 import { Container } from "@/components/design/container";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import settings from "@/data/settings.json";
+import { isAdminEnabled } from "@/lib/paths";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const adminEnabled = isAdminEnabled();
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--background)]/90 backdrop-blur">
@@ -22,9 +24,11 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link className="text-sm font-semibold text-[var(--muted)] transition hover:text-[var(--foreground)]" href="/admin">
-            Admin
-          </Link>
+          {adminEnabled ? (
+            <Link className="text-sm font-semibold text-[var(--muted)] transition hover:text-[var(--foreground)]" href="/admin">
+              Admin
+            </Link>
+          ) : null}
         </nav>
         <div className="flex items-center gap-2">
           <ThemeToggle />
@@ -41,9 +45,11 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link className="rounded-md px-3 py-2 text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/10" href="/admin" onClick={() => setOpen(false)}>
-              Admin
-            </Link>
+            {adminEnabled ? (
+              <Link className="rounded-md px-3 py-2 text-sm font-semibold hover:bg-black/5 dark:hover:bg-white/10" href="/admin" onClick={() => setOpen(false)}>
+                Admin
+              </Link>
+            ) : null}
           </Container>
         </div>
       ) : null}
