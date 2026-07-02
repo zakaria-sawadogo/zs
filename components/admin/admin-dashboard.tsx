@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Check, Copy, Download, Eye, FileJson, Plus, Save, Trash2 } from "lucide-react";
+import { Check, Copy, Download, Eye, FileJson, FolderOpen, Plus, Save, Trash2 } from "lucide-react";
 import { Button } from "@/components/design/button";
 import { Card } from "@/components/design/card";
 import { Container } from "@/components/design/container";
@@ -33,7 +33,13 @@ type FileSystemFileHandleLike = {
   createWritable: () => Promise<FileSystemWritableFileStreamLike>;
 };
 
+type FileSystemDirectoryHandleLike = {
+  getDirectoryHandle: (name: string) => Promise<FileSystemDirectoryHandleLike>;
+  getFileHandle: (name: string, options?: { create?: boolean }) => Promise<FileSystemFileHandleLike>;
+};
+
 type WindowWithSavePicker = Window & {
+  showDirectoryPicker?: () => Promise<FileSystemDirectoryHandleLike>;
   showSaveFilePicker?: (options: {
     suggestedName: string;
     types: Array<{ description: string; accept: Record<string, string[]> }>;
@@ -93,6 +99,30 @@ function fileNameFor(key: AdminSection["key"]) {
   return `${key}.json`;
 }
 
+function writableDataFor(key: AdminSection["key"], data: unknown) {
+  if (key === "skills") {
+    return { ...siteData.profile, skills: data };
+  }
+
+  if (key === "cv") {
+    const cv = data as Partial<typeof siteData.profile>;
+    return {
+      ...siteData.profile,
+      cvUrl: cv.cvUrl ?? siteData.profile.cvUrl,
+      name: cv.name ?? siteData.profile.name,
+      title: cv.title ?? siteData.profile.title,
+      bio: cv.bio ?? siteData.profile.bio
+    };
+  }
+
+  if (key === "downloads") {
+    const downloads = data as { cv?: string };
+    return { ...siteData.profile, cvUrl: downloads.cv ?? siteData.profile.cvUrl };
+  }
+
+  return data;
+}
+
 function downloadJson(filename: string, data: unknown) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -107,6 +137,7 @@ export function AdminDashboard() {
   const [activeKey, setActiveKey] = useState<AdminSection["key"]>("settings");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [store, setStore] = useState<Record<string, unknown>>({});
+  const [projectDirectory, setProjectDirectory] = useState<FileSystemDirectoryHandleLike | null>(null);
   const [toast, setToast] = useState("");
   const [previewOpen, setPreviewOpen] = useState(false);
   const activeSection = sections.find((section) => section.key === activeKey) ?? sections[0];
@@ -146,7 +177,30 @@ export function AdminDashboard() {
     window.setTimeout(() => setToast(""), 2500);
   }
 
-  function onSubmit(values: FormValues) {
+  async function writeJsonFile(key: AdminSection["key"], data: unknown) {
+    if (!projectDirectory) return false;
+
+    const dataDirectory = await projectDirectory.getDirectoryHandle("data");
+    const fileHandle = await dataDirectory.getFileHandle(fileNameFor(key), { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(new Blob([JSON.stringify(writableDataFor(key, data), null, 2)], { type: "application/json" }));
+    await writable.close();
+    return true;
+  }
+
+  async function chooseProjectDirectory() {
+    const browser = window as WindowWithSavePicker;
+    if (!browser.showDirectoryPicker) {
+      setToast("Ton navigateur ne permet pas l'écriture directe. Utilise Chrome ou Edge en local.");
+      return;
+    }
+
+    const directory = await browser.showDirectoryPicker();
+    setProjectDirectory(directory);
+    setToast("Dossier projet sélectionné. Les prochains enregistrements peuvent modifier data/*.json.");
+  }
+
+  async function onSubmit(values: FormValues) {
     const parsed = jsonSchema.safeParse(values.json);
     if (!parsed.success) {
       setToast(parsed.error.issues[0]?.message ?? "JSON invalide");
@@ -158,6 +212,11 @@ export function AdminDashboard() {
       : parsed.data;
 
     persist({ ...store, [activeKey]: nextData }, "Modifications enregistrées localement");
+
+    if (projectDirectory) {
+      await writeJsonFile(activeKey, nextData);
+      setToast(`${fileNameFor(activeKey)} modifié dans le dossier data/`);
+    }
   }
 
   function addRecord() {
@@ -191,18 +250,61 @@ export function AdminDashboard() {
         types: [{ description: "JSON", accept: { "application/json": [".json"] } }]
       });
       const writable = await handle.createWritable();
-      await writable.write(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
+      await writable.write(new Blob([JSON.stringify(writableDataFor(activeKey, data), null, 2)], { type: "application/json" }));
       await writable.close();
       setToast("Fichier JSON sauvegardé");
       return;
     }
-    downloadJson(filename, data);
+    downloadJson(filename, writableDataFor(activeKey, data));
     setToast("Fichier JSON exporté");
+  }
+
+  async function saveCurrentToProject() {
+    if (!projectDirectory) {
+      setToast("Choisis d'abord le dossier du projet.");
+      return;
+    }
+
+    await writeJsonFile(activeKey, store[activeKey] ?? activeData);
+    setToast(`${fileNameFor(activeKey)} modifié dans data/. Tu peux maintenant commit et push.`);
+  }
+
+  async function saveAllToProject() {
+    if (!projectDirectory) {
+      setToast("Choisis d'abord le dossier du projet.");
+      return;
+    }
+
+    const keys = Object.keys(siteData) as DataKey[];
+    await Promise.all(keys.map((key) => writeJsonFile(key, store[key] ?? siteData[key])));
+    setToast("Tous les fichiers data/*.json ont été écrits. Tu peux commit et push.");
   }
 
   return (
     <Container className="py-10">
-      <Heading eyebrow="Local Admin" title="Academic website administration" text="This dashboard runs entirely in the browser. Edit JSON locally, validate it, preview changes, then export or save the matching data file." />
+      <Heading eyebrow="Local Admin" title="Academic website administration" text="Les modifications sont d'abord gardées dans le navigateur. Pour les envoyer sur GitHub, choisis le dossier du projet puis écris les fichiers data/*.json avant le commit." />
+      <Card className="mb-6 border-[var(--brand)]">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-xl font-bold">Écriture directe dans le projet</h2>
+            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+              Sélectionne le dossier racine du projet, celui qui contient `app`, `components` et `data`.
+              Après l'écriture, fais `git status`, `git add`, `commit`, puis `push`.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="secondary" onClick={chooseProjectDirectory}>
+              <FolderOpen size={16} /> Choisir le dossier
+            </Button>
+            <Button type="button" variant="secondary" onClick={saveCurrentToProject}>
+              <Save size={16} /> Écrire ce fichier
+            </Button>
+            <Button type="button" onClick={saveAllToProject}>
+              <Save size={16} /> Écrire tout
+            </Button>
+          </div>
+        </div>
+      </Card>
       <div className="mb-6 grid gap-4 md:grid-cols-4">
         {dashboardStats.map((stat) => (
           <Card key={stat.label}>
@@ -270,6 +372,7 @@ export function AdminDashboard() {
                   <Button type="button" variant="secondary" onClick={() => setPreviewOpen(true)}><Eye size={16} /> Preview</Button>
                   <Button type="button" variant="secondary" onClick={() => navigator.clipboard.writeText(JSON.stringify(store[activeKey] ?? activeData, null, 2))}><Copy size={16} /> Copy</Button>
                   <Button type="button" variant="secondary" onClick={saveToDisk}><Download size={16} /> Export</Button>
+                  <Button type="button" variant="secondary" onClick={saveCurrentToProject}><Save size={16} /> Write file</Button>
                 </div>
               </div>
               <textarea
@@ -295,7 +398,7 @@ export function AdminDashboard() {
       ) : null}
       <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-[var(--muted)]">
         <Check size={16} className="text-[var(--brand)]" />
-        Local-only admin: no database, no server API, JSON export ready for GitHub Pages.
+        Local-only admin: écriture directe possible en local, aucun admin livré aux visiteurs sur GitHub Pages.
       </div>
     </Container>
   );

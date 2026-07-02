@@ -39,6 +39,38 @@ Pendant le déploiement public, la route locale `/admin` est désactivée et ret
 NEXT_PUBLIC_ENABLE_ADMIN=true npm run dev
 ```
 
+## Modifier les données avec l'admin local
+
+L'admin local affiche et modifie les données dans le navigateur. Pour que Git voie les changements, il faut écrire les fichiers JSON du projet :
+
+1. Lance le site en local :
+
+```bash
+NEXT_PUBLIC_ENABLE_ADMIN=true npm run dev
+```
+
+2. Ouvre `/admin`.
+3. Clique sur `Choisir le dossier`.
+4. Sélectionne le dossier racine du projet, celui qui contient `data`.
+5. Modifie une section.
+6. Clique sur `Save local edits`.
+7. Clique sur `Écrire ce fichier` ou `Écrire tout`.
+8. Vérifie avec :
+
+```bash
+git status
+```
+
+9. Envoie les changements :
+
+```bash
+git add data
+git commit -m "Update website data"
+git push
+```
+
+Si ton navigateur ne permet pas `Choisir le dossier`, utilise `Export`, remplace manuellement le fichier correspondant dans `data/`, puis commit et push.
+
 ## 4. URL finale
 
 Si le dépôt s'appelle `zakaria-sawadogo`, le site sera généralement disponible ici :
