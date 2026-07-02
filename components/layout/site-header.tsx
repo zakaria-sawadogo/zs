@@ -13,19 +13,19 @@ export function SiteHeader() {
   const adminEnabled = isAdminEnabled();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--background)]/90 backdrop-blur">
-      <Container className="flex min-h-16 items-center justify-between gap-4">
-        <Link href="/" className="font-bold tracking-normal text-[var(--ink)]">
-          Zakaria Sawadogo
+    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--background)]/95 backdrop-blur">
+      <Container className="flex min-h-14 items-center justify-between gap-4">
+        <Link href="/" className="font-serif text-lg font-bold tracking-normal text-[var(--ink)]">
+          Dr Zakaria Sawadogo
         </Link>
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden items-center gap-4 lg:flex">
           {settings.navigation.map((item) => (
-            <Link className="text-sm font-semibold text-[var(--muted)] transition hover:text-[var(--foreground)]" href={item.href} key={item.href}>
+            <Link className="text-[13px] font-semibold text-[var(--muted)] transition hover:text-[var(--foreground)]" href={item.href} key={item.href}>
               {item.label}
             </Link>
           ))}
           {adminEnabled ? (
-            <Link className="text-sm font-semibold text-[var(--muted)] transition hover:text-[var(--foreground)]" href="/admin">
+            <Link className="text-[13px] font-semibold text-[var(--muted)] transition hover:text-[var(--foreground)]" href="/admin">
               Admin
             </Link>
           ) : null}

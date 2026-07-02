@@ -2,28 +2,30 @@
 
 :root {
   color-scheme: light;
-  --background: #f7f5ef;
-  --foreground: #151515;
-  --muted: #6f756d;
+  --background: #fbfbf8;
+  --foreground: #202124;
+  --muted: #626867;
   --panel: #ffffff;
-  --line: #dedbd2;
-  --brand: #0f766e;
-  --brand-dark: #134e4a;
-  --accent: #b45309;
-  --ink: #111827;
+  --line: #d9ded8;
+  --brand: #12635d;
+  --brand-dark: #0f4c47;
+  --accent: #9a5b13;
+  --ink: #16181b;
+  --soft: #f0f4f1;
 }
 
 .dark {
   color-scheme: dark;
-  --background: #101411;
-  --foreground: #f3f5ef;
-  --muted: #b4baae;
-  --panel: #171d19;
-  --line: #30372f;
+  --background: #101312;
+  --foreground: #f2f4ef;
+  --muted: #b7bdb8;
+  --panel: #171a18;
+  --line: #303632;
   --brand: #5eead4;
   --brand-dark: #99f6e4;
   --accent: #fbbf24;
   --ink: #f8fafc;
+  --soft: #151d1a;
 }
 
 * {
@@ -41,6 +43,8 @@ body {
   color: var(--foreground);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   letter-spacing: 0;
+  font-size: 16px;
+  line-height: 1.65;
 }
 
 a {
@@ -62,7 +66,31 @@ select {
 
 .academic-grid {
   background-image:
-    linear-gradient(rgba(15, 118, 110, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 118, 110, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(18, 99, 93, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 99, 93, 0.06) 1px, transparent 1px);
   background-size: 34px 34px;
+}
+
+.academic-link {
+  color: var(--brand);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--brand) 30%, transparent);
+  text-underline-offset: 3px;
+}
+
+.paper-list {
+  counter-reset: paper;
+}
+
+.paper-list > li {
+  counter-increment: paper;
+}
+
+.paper-list > li::before {
+  content: counter(paper, decimal-leading-zero);
+  color: var(--brand);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
 }
