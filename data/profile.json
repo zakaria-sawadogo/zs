@@ -1,19 +1,19 @@
 {
-  "name": "Dr Zakaria Sawadogo",
+  "name": "Dr.Zakaria Sawadogo",
   "title": "Lecturer & Researcher",
   "headline": "Artificial Intelligence • Cybersecurity • Data Science",
   "institution": "École Polytechnique de Ouagadougou",
   "location": "Ouagadougou, Burkina Faso",
   "email": "zakaria.sawadogo@epo.bf",
   "phone": "+226 00 00 00 00",
-  "photo": "/images/profile.svg",
+  "photo": "/images/image00013.jpeg",
   "bio": "Dr Zakaria Sawadogo is a lecturer and researcher working at the intersection of artificial intelligence, cybersecurity, Android malware analysis, privacy-preserving systems, data science, and digital transformation. His work focuses on building reliable, useful, and locally relevant intelligent systems for education, public services, and secure digital ecosystems.",
   "shortBio": "Lecturer and researcher in AI, cybersecurity, data science, privacy, and digital transformation.",
   "stats": [
     { "label": "Research Areas", "value": 6 },
-    { "label": "Publications", "value": 18 },
+    { "label": "Publications", "value": 13 },
     { "label": "Projects", "value": 9 },
-    { "label": "Students", "value": 24 }
+    { "label": "Students", "value": 10 }
   ],
   "skills": ["Machine Learning", "Android Malware Analysis", "Cybersecurity", "Privacy", "Data Engineering", "Digital Transformation", "Python", "Next.js", "Cloud Systems"],
   "responsibilities": [
