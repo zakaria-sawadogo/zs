@@ -12,12 +12,34 @@
   "shortBio": "Lecturer and researcher in AI, cybersecurity, data science, and digital transformation.",
   "shortBioFr": "Enseignant-chercheur en IA, cybersécurité, science des données et transformation numérique.",
   "stats": [
-    { "label": "Research Areas", "value": 6 },
-    { "label": "Publications", "value": 11 },
-    { "label": "Projects", "value": 9 },
-    { "label": "Students", "value": 10 }
+    {
+      "label": "Research Areas",
+      "value": 6
+    },
+    {
+      "label": "Publications",
+      "value": 11
+    },
+    {
+      "label": "Projects",
+      "value": 9
+    },
+    {
+      "label": "Students",
+      "value": 10
+    }
   ],
-  "skills": ["Machine Learning", "Android Malware Analysis", "Cybersecurity", "Privacy", "Data Engineering", "Digital Transformation", "Python", "Next.js", "Cloud Systems"],
+  "skills": [
+    "Machine Learning",
+    "Android Malware Analysis",
+    "Cybersecurity",
+    "Privacy",
+    "Data Engineering",
+    "Digital Transformation",
+    "Python",
+    "Next.js",
+    "Cloud Systems"
+  ],
   "responsibilities": [
     "Academic program design and teaching coordination",
     "Research supervision in AI and cybersecurity",
