@@ -1,6 +1,8 @@
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
 import { cwd, env, exit } from "node:process";
+import { mkdir, writeFile } from "node:fs/promises";
+import { basename, join, normalize, relative } from "node:path";
 
 const projectRoot = cwd();
 const apiPort = 8787;
@@ -37,7 +39,7 @@ async function publish() {
     return { ok: true, message: "Aucun changement à publier." };
   }
 
-  const add = await run("git", ["add", "data", "public/images"]);
+  const add = await run("git", ["add", "data", "public"]);
   if (add.code !== 0) {
     return { ok: false, message: add.stderr || add.stdout };
   }
@@ -66,6 +68,61 @@ async function publish() {
   };
 }
 
+function readJsonBody(request) {
+  return new Promise((resolve, reject) => {
+    let body = "";
+    request.on("data", (chunk) => {
+      body += chunk.toString();
+    });
+    request.on("end", () => {
+      try {
+        resolve(JSON.parse(body || "{}"));
+      } catch (error) {
+        reject(error);
+      }
+    });
+    request.on("error", reject);
+  });
+}
+
+function safeProjectPath(...parts) {
+  const target = normalize(join(projectRoot, ...parts));
+  const rel = relative(projectRoot, target);
+  if (rel.startsWith("..") || rel.includes("..")) {
+    throw new Error("Chemin refusé.");
+  }
+  return target;
+}
+
+async function writeDataFile(payload) {
+  const filename = basename(String(payload.filename ?? ""));
+  if (!filename.endsWith(".json")) {
+    return { ok: false, message: "Nom de fichier JSON invalide." };
+  }
+
+  const target = safeProjectPath("data", filename);
+  await writeFile(target, `${JSON.stringify(payload.data, null, 2)}\n`, "utf8");
+  return { ok: true, message: `${filename} écrit dans data/.` };
+}
+
+async function writePublicFile(payload) {
+  const folder = String(payload.folder ?? "");
+  const filename = basename(String(payload.filename ?? ""));
+  const contentBase64 = String(payload.contentBase64 ?? "");
+
+  if (!["downloads", "publications", "images"].includes(folder)) {
+    return { ok: false, message: "Dossier public refusé." };
+  }
+  if (!filename || filename !== String(payload.filename)) {
+    return { ok: false, message: "Nom de fichier invalide." };
+  }
+
+  const directory = safeProjectPath("public", folder);
+  await mkdir(directory, { recursive: true });
+  await writeFile(join(directory, filename), Buffer.from(contentBase64, "base64"));
+  return { ok: true, message: `${filename} écrit dans public/${folder}/`, url: `/${folder}/${filename}` };
+}
+
 const api = createServer(async (request, response) => {
   response.setHeader("Access-Control-Allow-Origin", "*");
   response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -81,6 +138,30 @@ const api = createServer(async (request, response) => {
     const result = await publish();
     response.writeHead(result.ok ? 200 : 500, { "Content-Type": "application/json" });
     response.end(JSON.stringify(result));
+    return;
+  }
+
+  if (request.method === "POST" && request.url === "/write-data") {
+    try {
+      const result = await writeDataFile(await readJsonBody(request));
+      response.writeHead(result.ok ? 200 : 400, { "Content-Type": "application/json" });
+      response.end(JSON.stringify(result));
+    } catch (error) {
+      response.writeHead(500, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ ok: false, message: String(error) }));
+    }
+    return;
+  }
+
+  if (request.method === "POST" && request.url === "/write-public") {
+    try {
+      const result = await writePublicFile(await readJsonBody(request));
+      response.writeHead(result.ok ? 200 : 400, { "Content-Type": "application/json" });
+      response.end(JSON.stringify(result));
+    } catch (error) {
+      response.writeHead(500, { "Content-Type": "application/json" });
+      response.end(JSON.stringify({ ok: false, message: String(error) }));
+    }
     return;
   }
 

@@ -147,6 +147,24 @@ function ensurePdf(file: File) {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
 }
 
+function localAdminUrl(path: string) {
+  const publishUrl = process.env.NEXT_PUBLIC_LOCAL_PUBLISH_URL;
+  if (!publishUrl) return "";
+  return publishUrl.replace(/\/publish$/, path);
+}
+
+function fileToBase64(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result ?? "");
+      resolve(result.includes(",") ? result.split(",")[1] : result);
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
 export function AdminDashboard() {
   const [activeKey, setActiveKey] = useState<AdminSection["key"]>("settings");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -215,12 +233,29 @@ export function AdminDashboard() {
   }
 
   async function writeJsonFile(key: AdminSection["key"], data: unknown) {
+    const payload = {
+      filename: fileNameFor(key),
+      data: writableDataFor(key, data)
+    };
+
+    const writeUrl = localAdminUrl("/write-data");
+    if (writeUrl) {
+      const response = await fetch(writeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = (await response.json()) as { ok: boolean; message: string };
+      if (!result.ok) throw new Error(result.message);
+      return true;
+    }
+
     if (!projectDirectory) return false;
 
     const dataDirectory = await projectDirectory.getDirectoryHandle("data");
-    const fileHandle = await dataDirectory.getFileHandle(fileNameFor(key), { create: true });
+    const fileHandle = await dataDirectory.getFileHandle(payload.filename, { create: true });
     const writable = await fileHandle.createWritable();
-    await writable.write(new Blob([JSON.stringify(writableDataFor(key, data), null, 2)], { type: "application/json" }));
+    await writable.write(new Blob([JSON.stringify(payload.data, null, 2)], { type: "application/json" }));
     await writable.close();
     return true;
   }
@@ -236,6 +271,22 @@ export function AdminDashboard() {
   }
 
   async function writePublicFile(path: string[], filename: string, file: File) {
+    const writeUrl = localAdminUrl("/write-public");
+    if (writeUrl) {
+      const response = await fetch(writeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          folder: path.join("/"),
+          filename,
+          contentBase64: await fileToBase64(file)
+        })
+      });
+      const result = (await response.json()) as { ok: boolean; message: string; url?: string };
+      if (!result.ok) throw new Error(result.message);
+      return result.url ?? `/${[...path, filename].join("/")}`;
+    }
+
     const directory = await getPublicDirectory(path);
     if (!directory) return "";
 
@@ -319,8 +370,8 @@ export function AdminDashboard() {
   }
 
   async function saveCurrentToProject() {
-    if (!projectDirectory) {
-      setToast("Choisis d'abord le dossier du projet.");
+    if (!projectDirectory && !localAdminUrl("/write-data")) {
+      setToast("Lance avec `npm run admin`, ou utilise Chrome/Edge puis Choisir le dossier.");
       return;
     }
 
@@ -330,8 +381,8 @@ export function AdminDashboard() {
   }
 
   async function saveAllToProject() {
-    if (!projectDirectory) {
-      setToast("Choisis d'abord le dossier du projet.");
+    if (!projectDirectory && !localAdminUrl("/write-data")) {
+      setToast("Lance avec `npm run admin`, ou utilise Chrome/Edge puis Choisir le dossier.");
       return;
     }
 
@@ -345,8 +396,8 @@ export function AdminDashboard() {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    if (!projectDirectory) {
-      setToast("Choisis d'abord le dossier du projet.");
+    if (!projectDirectory && !localAdminUrl("/write-public")) {
+      setToast("Lance avec `npm run admin`, ou utilise Chrome/Edge puis Choisir le dossier.");
       return;
     }
     if (!ensurePdf(file)) {
@@ -369,8 +420,8 @@ export function AdminDashboard() {
     const file = event.target.files?.[0];
     event.target.value = "";
     if (!file) return;
-    if (!projectDirectory) {
-      setToast("Choisis d'abord le dossier du projet.");
+    if (!projectDirectory && !localAdminUrl("/write-public")) {
+      setToast("Lance avec `npm run admin`, ou utilise Chrome/Edge puis Choisir le dossier.");
       return;
     }
     if (activeKey !== "publications") {
@@ -404,8 +455,8 @@ export function AdminDashboard() {
           <div>
             <h2 className="text-xl font-bold">Écriture directe dans le projet</h2>
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-              Sélectionne le dossier racine du projet, celui qui contient `app`, `components` et `data`.
-              Avec `npm run admin`, le bouton de publication fait automatiquement `git add`, `commit` et `push`.
+              Lance avec `npm run admin` pour écrire directement dans le projet, sans sélectionner de dossier.
+              Le bouton de publication fait automatiquement `git add`, `commit` et `push`.
               Les PDF ajoutés ici sont copiés dans `public/downloads` ou `public/publications` pour être visibles et téléchargeables sur GitHub Pages.
             </p>
             <label className="mt-4 flex items-center gap-2 text-sm font-semibold text-[var(--muted)]">
