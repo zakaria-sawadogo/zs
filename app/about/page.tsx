@@ -68,6 +68,18 @@ export default function AboutPage() {
         </div>
 
         <div className="space-y-5">
+          <Card>
+            <h2 className="mb-4 text-xl font-bold">Awards</h2>
+            <div className="space-y-4">
+              {awards.map((item) => (
+                <div key={item.title}>
+                  <p className="font-bold">{item.title}</p>
+                  <p className="text-sm text-[var(--muted)]">{item.organization} · {item.year}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
           <Card className="bg-[var(--brand)] text-white">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-white/75">Affiliation</p>
             <h2 className="mt-3 text-2xl font-bold">{profile.institution}</h2>
@@ -90,18 +102,6 @@ export default function AboutPage() {
                 </li>
               ))}
             </ul>
-          </Card>
-
-          <Card>
-            <h2 className="mb-4 text-xl font-bold">Awards</h2>
-            <div className="space-y-4">
-              {awards.map((item) => (
-                <div key={item.title}>
-                  <p className="font-bold">{item.title}</p>
-                  <p className="text-sm text-[var(--muted)]">{item.organization} · {item.year}</p>
-                </div>
-              ))}
-            </div>
           </Card>
         </div>
       </div>
