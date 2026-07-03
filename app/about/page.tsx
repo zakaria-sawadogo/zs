@@ -8,6 +8,7 @@ import profile from "@/data/profile.json";
 import experience from "@/data/experience.json";
 import education from "@/data/education.json";
 import awards from "@/data/awards.json";
+import policyContributions from "@/data/policy-contributions.json";
 
 export const metadata = { title: "About" };
 
@@ -55,6 +56,18 @@ export default function AboutPage() {
               </p>
             </Card>
           </div>
+
+          <Card>
+            <h2 className="mb-4 text-xl font-bold">Selected Policy & Advisory Contributions</h2>
+            <ul className="space-y-3 text-sm leading-7 text-[var(--muted)]">
+              {policyContributions.map((item) => (
+                <li className="flex gap-3" key={item}>
+                  <span className="mt-3 size-1.5 shrink-0 rounded-full bg-[var(--brand)]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
 
           <div>
             <h2 className="mb-5 text-2xl font-bold">Academic Path</h2>
