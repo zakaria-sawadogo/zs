@@ -3,16 +3,32 @@
     "role": "Lecturer & Researcher",
     "organization": "École Polytechnique de Ouagadougou",
     "location": "Ouagadougou, Burkina Faso",
-    "start": "2022",
+    "start": "2024",
     "end": "Present",
-    "summary": "Teaching, supervising research, and leading applied work in AI, cybersecurity, data science, and digital transformation."
+    "summary": "Lead research on AI governance, cybersecurity, and digital trust.\nDevelop policy-oriented research supporting digital transformation."
   },
   {
-    "role": "Research Collaborator",
-    "organization": "Applied AI and Security Programs",
+    "role": "IT Consultant - Digital Rights & Inclusion",
+    "organization": "Enabel",
     "location": "Burkina Faso",
-    "start": "2019",
-    "end": "2022",
-    "summary": "Contributed to research projects on secure mobile systems, data-driven decision support, and intelligent detection methods."
+    "start": "2024",
+    "end": "2025",
+    "summary": "Advised institutions on digital rights and personal data protection.\nCo-authored the Digital Rights Manual for Beginners."
+  },
+  {
+    "role": "Research Assistant",
+    "organization": "University of Greenwich",
+    "location": "United Kingdom",
+    "start": "2023",
+    "end": "2023",
+    "summary": "Conducted cybersecurity research and AI-enabled threat detection projects."
+  },
+  {
+    "role": "Junior Research Fellow",
+    "organization": "AI4D Africa",
+    "location": "Africa",
+    "start": "2018",
+    "end": "2019",
+    "summary": "Conducted research on AI for Development and low-resource African languages."
   }
 ]

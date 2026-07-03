@@ -11,7 +11,7 @@ export function Timeline({
           <p className="text-sm font-semibold text-[var(--brand)]">{item.year ?? `${item.start} - ${item.end}`}</p>
           <h3 className="mt-1 text-xl font-bold text-[var(--ink)]">{item.title ?? item.role ?? item.degree}</h3>
           <p className="text-sm text-[var(--muted)]">{item.organization ?? item.institution}</p>
-          <p className="mt-3 leading-7 text-[var(--muted)]">{item.summary ?? item.details}</p>
+          <p className="mt-3 whitespace-pre-line leading-7 text-[var(--muted)]">{item.summary ?? item.details}</p>
         </article>
       ))}
     </div>
