@@ -34,7 +34,7 @@ type FileSystemFileHandleLike = {
 };
 
 type FileSystemDirectoryHandleLike = {
-  getDirectoryHandle: (name: string) => Promise<FileSystemDirectoryHandleLike>;
+  getDirectoryHandle: (name: string, options?: { create?: boolean }) => Promise<FileSystemDirectoryHandleLike>;
   getFileHandle: (name: string, options?: { create?: boolean }) => Promise<FileSystemFileHandleLike>;
 };
 
@@ -133,6 +133,20 @@ function downloadJson(filename: string, data: unknown) {
   URL.revokeObjectURL(url);
 }
 
+function slugifyFilename(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 90);
+}
+
+function ensurePdf(file: File) {
+  return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+}
+
 export function AdminDashboard() {
   const [activeKey, setActiveKey] = useState<AdminSection["key"]>("settings");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -209,6 +223,27 @@ export function AdminDashboard() {
     await writable.write(new Blob([JSON.stringify(writableDataFor(key, data), null, 2)], { type: "application/json" }));
     await writable.close();
     return true;
+  }
+
+  async function getPublicDirectory(path: string[]) {
+    if (!projectDirectory) return null;
+
+    let directory = await projectDirectory.getDirectoryHandle("public", { create: true });
+    for (const segment of path) {
+      directory = await directory.getDirectoryHandle(segment, { create: true });
+    }
+    return directory;
+  }
+
+  async function writePublicFile(path: string[], filename: string, file: File) {
+    const directory = await getPublicDirectory(path);
+    if (!directory) return "";
+
+    const fileHandle = await directory.getFileHandle(filename, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(file);
+    await writable.close();
+    return `/${[...path, filename].join("/")}`;
   }
 
   async function chooseProjectDirectory() {
@@ -306,6 +341,61 @@ export function AdminDashboard() {
     if (autoPublish) await publishToGitHub();
   }
 
+  async function attachCvPdf(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!projectDirectory) {
+      setToast("Choisis d'abord le dossier du projet.");
+      return;
+    }
+    if (!ensurePdf(file)) {
+      setToast("Le CV doit être un fichier PDF.");
+      return;
+    }
+
+    const cvUrl = await writePublicFile(["downloads"], "zakaria-sawadogo-cv.pdf", file);
+    const nextProfile = { ...siteData.profile, ...(store.profile as object | undefined), cvUrl };
+    const nextStore = { ...store, profile: nextProfile, cv: { cvUrl, name: nextProfile.name, title: nextProfile.title, bio: nextProfile.bio }, downloads: { cv: cvUrl } };
+    persist(nextStore, "CV PDF ajouté dans public/downloads/ et profile.json mis à jour.");
+    await writeJsonFile("profile", nextProfile);
+    if (activeKey === "profile" || activeKey === "cv" || activeKey === "downloads") {
+      setValue("json", JSON.stringify(nextStore[activeKey], null, 2));
+    }
+    if (autoPublish) await publishToGitHub();
+  }
+
+  async function attachPublicationPdf(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!projectDirectory) {
+      setToast("Choisis d'abord le dossier du projet.");
+      return;
+    }
+    if (activeKey !== "publications") {
+      setToast("Va dans la section Publications puis sélectionne l'article concerné.");
+      return;
+    }
+    if (!ensurePdf(file)) {
+      setToast("Le fichier de l'article doit être un PDF.");
+      return;
+    }
+
+    const selectedPublication = records[selectedIndex] as { title?: string; year?: string | number };
+    const title = selectedPublication.title ?? `publication-${selectedIndex + 1}`;
+    const yearPrefix = selectedPublication.year ? `${selectedPublication.year}-` : "";
+    const filename = `${yearPrefix}${slugifyFilename(title)}.pdf`;
+    const pdfUrl = await writePublicFile(["publications"], filename, file);
+    const nextPublications = records.map((item, index) => (
+      index === selectedIndex ? { ...(item as Record<string, unknown>), pdf: pdfUrl } : item
+    ));
+    persist({ ...store, publications: nextPublications }, "PDF ajouté dans public/publications/ et publications.json mis à jour.");
+    await writeJsonFile("publications", nextPublications);
+    setValue("json", JSON.stringify(nextPublications[selectedIndex], null, 2));
+    if (autoPublish) await publishToGitHub();
+  }
+
   return (
     <Container className="py-10">
       <Heading eyebrow="Local Admin" title="Academic website administration" text="Lance ce tableau de bord avec `npm run admin`. Après l’écriture dans data/*.json, tu peux publier automatiquement sur GitHub." />
@@ -316,6 +406,7 @@ export function AdminDashboard() {
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
               Sélectionne le dossier racine du projet, celui qui contient `app`, `components` et `data`.
               Avec `npm run admin`, le bouton de publication fait automatiquement `git add`, `commit` et `push`.
+              Les PDF ajoutés ici sont copiés dans `public/downloads` ou `public/publications` pour être visibles et téléchargeables sur GitHub Pages.
             </p>
             <label className="mt-4 flex items-center gap-2 text-sm font-semibold text-[var(--muted)]">
               <input
@@ -406,6 +497,17 @@ export function AdminDashboard() {
                   <p className="text-sm text-[var(--muted)]">Validation is performed before saving local changes.</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
+                  <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-[var(--line)] bg-[var(--panel)] px-5 py-2.5 text-sm font-semibold transition hover:border-[var(--brand)]">
+                    <Download size={16} /> Joindre CV PDF
+                    <input className="sr-only" type="file" accept="application/pdf,.pdf" onChange={attachCvPdf} />
+                  </label>
+                  <label className={cn(
+                    "inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-[var(--line)] bg-[var(--panel)] px-5 py-2.5 text-sm font-semibold transition hover:border-[var(--brand)]",
+                    activeKey === "publications" ? "cursor-pointer" : "cursor-not-allowed opacity-60"
+                  )}>
+                    <Download size={16} /> PDF article
+                    <input className="sr-only" type="file" accept="application/pdf,.pdf" disabled={activeKey !== "publications"} onChange={attachPublicationPdf} />
+                  </label>
                   <Button type="button" variant="secondary" onClick={() => setPreviewOpen(true)}><Eye size={16} /> Preview</Button>
                   <Button type="button" variant="secondary" onClick={() => navigator.clipboard.writeText(JSON.stringify(store[activeKey] ?? activeData, null, 2))}><Copy size={16} /> Copy</Button>
                   <Button type="button" variant="secondary" onClick={saveToDisk}><Download size={16} /> Export</Button>
